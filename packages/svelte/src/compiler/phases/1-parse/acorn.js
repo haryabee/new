@@ -4,6 +4,7 @@ import * as acorn from 'acorn';
 import { walk } from 'zimmerframe';
 import { tsPlugin } from 'acorn-typescript';
 import { locator } from '../../state.js';
+import { appendFileSync } from 'node:fs';
 
 const ParserWithTS = acorn.Parser.extend(tsPlugin({ allowSatisfies: true }));
 
@@ -14,17 +15,22 @@ const ParserWithTS = acorn.Parser.extend(tsPlugin({ allowSatisfies: true }));
 export function parse(source, typescript) {
 	const parser = typescript ? ParserWithTS : acorn.Parser;
 	const { onComment, add_comments } = get_comment_handlers(source);
-
+	
 	const ast = parser.parse(source, {
 		onComment,
 		sourceType: 'module',
 		ecmaVersion: 13,
 		locations: true
 	});
-
+	
 	if (typescript) amend(source, ast);
 	add_comments(ast);
-
+	
+	// appendFileSync('acorn.log', JSON.stringify({
+	// 	fn: 'parse',
+	// 	source,
+	// 	typescript
+	// }) + '\n')
 	return /** @type {Program} */ (ast);
 }
 
@@ -48,6 +54,12 @@ export function parse_expression_at(source, typescript, index) {
 	if (typescript) amend(source, ast);
 	add_comments(ast);
 
+	// appendFileSync('acorn.log', JSON.stringify({
+	// 	fn: 'parse_expression_at',
+	// 	source,
+	// 	typescript,
+	// 	index,
+	// }) + '\n')
 	return ast;
 }
 
