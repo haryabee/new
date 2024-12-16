@@ -1,3 +1,4 @@
+export { clsx } from 'clsx';
 export { FILENAME, HMR, NAMESPACE_SVG } from '../../constants.js';
 export { assign, assign_and, assign_or, assign_nullish } from './dev/assign.js';
 export { cleanup_styles } from './dev/css.js';

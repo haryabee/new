@@ -38,6 +38,12 @@ export function Attribute(node, context) {
 		mark_subtree_dynamic(context.path);
 	}
 
+	// class={[...]} or class={{...}} or `class={x}` need clsx to resolve the classes
+	if (node.name === 'class' && !Array.isArray(node.value) && node.value !== true) {
+		mark_subtree_dynamic(context.path);
+		node.metadata.is_dynamic_class = true;
+	}
+
 	if (node.value !== true) {
 		for (const chunk of get_attribute_chunks(node.value)) {
 			if (chunk.type !== 'ExpressionTag') continue;
